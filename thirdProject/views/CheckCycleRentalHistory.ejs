@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheet.style.css'/>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <form action="/cycle/RentalUser/" method="GET">
+        <label for="userName">유저 이름 검색:</label>
+        <input type="text" id="userName" name="userName" placeholder="유저 이름을 입력하세요" required>
+        <button type="submit">검색</button>
+    </form>
+    <br>
+    <br>
+    <table border="1">
+        <tr>
+            <td>CycleNumber</td>
+            <td>RentalUser</td>
+            <td>RentalDate_start</td>
+            <td>RentalDate_end</td>
+            <td>Distance</td>
+            <td>Rental_start_station</td>
+            <td>Rental_end_station</td>
+        </tr>
+        <% for (var i = 0; i < rows.length; i++) { %>
+            <tr>
+                <td><%= rows[i].CycleNumber %></td>
+                <td><%= rows[i].RentalUser %></td>
+                <td><%= rows[i].RentalDate_start %></td>
+                <td><%= rows[i].RentalDate_end %></td>
+                <td><%= rows[i].Distance %></td>
+                <td><%= rows[i].Rental_start_station %></td>
+                <td><%= rows[i].Rental_end_station %></td>
+            </tr>
+        <% } %>
+    </table>
+
+    <style>
+        
+        .graph-container {
+            position: relative;
+        }
+
+        .graph {
+            position: absolute;
+            top: 0;
+            padding: 10px;
+            display: none; /* 그래프 초기에 숨기기 */
+        }
+
+        /* 개별 버튼 스타일 (선택적으로 사용) */
+        .button-container button {
+            margin-bottom: 10px;
+        }
+
+        /* 범례 스타일 */
+        .legend-container {
+            position: absolute;
+            top: 500px;
+            padding: 10px;
+        }
+
+        .legend-item {
+            margin-bottom: 5px;
+        }
+
+        #chart-container-to {
+        left: 600px;
+        }
+        #legend-container-from {
+        left: 600px;
+        }
+        #chart-container-from {
+        left: 100px;
+        }#chart-container-to {
+        left: 700px;
+        }
+        
+        
+
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+
+    <!-- 그래프 컨테이너 추가 -->
+    <div class="graph-container">
+        <div id="chart-container-from" class="graph" style="width: 400px; height: 400px;"></div>
+        <div id="chart-container-to" class="graph" style="width: 400px; height: 400px;"></div>
+    </div>
+
+    <!-- 범례 컨테이너 추가 -->
+    <div id="legend-container-from" class="legend-container"></div>
+    <div id="legend-container-to" class="legend-container"></div>
+    
+    <script>
+        // 이전에 전달된 JSON 데이터 문자열
+        var rowsDataString = '<%- JSON.stringify(rows) %>';
+        var rowsData = JSON.parse(rowsDataString);
+        createAutoGraph();
+
+        function createAutoGraph()
+        {
+            createFromGraph();
+            createToGraph();   
+        }
+
+        function createFromGraph()
+        {
+            var StationNameArray = [];
+            var colors = [];
+            var frequency = {};
+
+            for (var i = 0; i < rowsData.length; i++)
+            {
+                var rentalEndStation = rowsData[i].Rental_start_station;
+
+                if (frequency[rentalEndStation]) {
+                    frequency[rentalEndStation]++;
+                } else {
+                    frequency[rentalEndStation] = 1;
+                }
+
+                StationNameArray.push(rentalEndStation);
+
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                colors.push(`rgb(${r},${g},${b}`);
+            }
+
+            var canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            var context = canvas.getContext('2d');
+
+            var maxValue = Math.max.apply(null, Object.values(frequency));
+            var barWidth = 30;
+            var barSpacing = 30;
+            var keys = Object.keys(frequency);
+
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var barHeight = (canvas.height - 40) * (frequency[key] / maxValue);
+                var x = i * (barWidth + barSpacing) + 10;
+                var y = canvas.height - barHeight - 20;
+
+                context.fillStyle = colors[i];
+                context.fillRect(x, y, barWidth, barHeight);
+
+                context.fillStyle = 'black';
+                context.font = '12px Arial';
+                context.fillText(frequency[key], x + barWidth / 2 - 10, y - 10);
+            }
+
+            var messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '<p>자전거를 대여한 대여소 </p>';
+
+            var containerDiv = document.createElement('div');
+            containerDiv.appendChild(canvas);
+            containerDiv.appendChild(messageDiv);
+
+            var chartContainer = document.getElementById('chart-container-from');
+            chartContainer.innerHTML = '';
+            chartContainer.appendChild(containerDiv);
+            //var legendContainer = document.getElementById('legend-container-to');
+
+            //updateLegend(keys, colors);
+            var legendContainer = document.getElementById('legend-container-to');
+            legendContainer.innerHTML = ''; // 기존 내용 지우기
+
+            for (var i = 0; i < keys.length; i++) {
+                var legendItem = document.createElement('div');
+                var colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = colors[i];
+                legendItem.appendChild(colorBox);
+                legendItem.innerHTML += keys[i];
+                legendContainer.appendChild(legendItem);
+            }
+
+
+            chartContainer.style.display = 'block';
+        }
+
+        function createToGraph()
+        {
+            var StationNameArray = [];
+            var colors = [];
+            var frequency = {};
+
+            for (var i = 0; i < rowsData.length; i++)
+            {
+                var rentalEndStation = rowsData[i].Rental_end_station;
+
+                if (frequency[rentalEndStation]) {
+                    frequency[rentalEndStation]++;
+                } else {
+                    frequency[rentalEndStation] = 1;
+                }
+
+                StationNameArray.push(rentalEndStation);
+
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                colors.push(`rgb(${r},${g},${b}`);
+            }
+
+            var canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            var context = canvas.getContext('2d');
+
+            var maxValue = Math.max.apply(null, Object.values(frequency));
+            var barWidth = 30;
+            var barSpacing = 30;
+            var keys = Object.keys(frequency);
+
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var barHeight = (canvas.height - 40) * (frequency[key] / maxValue);
+                var x = i * (barWidth + barSpacing) + 10;
+                var y = canvas.height - barHeight - 20;
+
+                context.fillStyle = colors[i];
+                context.fillRect(x, y, barWidth, barHeight);
+
+                context.fillStyle = 'black';
+                context.font = '12px Arial';
+                context.fillText(frequency[key], x + barWidth / 2 - 10, y - 10);
+            }
+
+            var messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '<p>자전거를 반납한 대여소</p>';
+
+            var containerDiv = document.createElement('div');
+            containerDiv.appendChild(canvas);
+            containerDiv.appendChild(messageDiv);
+
+            var chartContainer = document.getElementById('chart-container-to');
+            chartContainer.innerHTML = '';
+            chartContainer.appendChild(containerDiv);
+            //var legendContainer = document.getElementById('legend-container-from');
+            
+            
+            //updateLegend(keys, colors);//,legendContainer);
+
+            var legendContainer = document.getElementById('legend-container-from');
+            legendContainer.innerHTML = ''; // 기존 내용 지우기
+
+            for (var i = 0; i < keys.length; i++) {
+                var legendItem = document.createElement('div');
+                var colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = colors[i];
+                legendItem.appendChild(colorBox);
+                legendItem.innerHTML += keys[i];
+                legendContainer.appendChild(legendItem);
+            }
+
+            chartContainer.style.display = 'block';
+        }
+
+        // // 범례 업데이트 함수
+        function updateLegend(stationNames, colors)
+        {
+            var legendContainer = document.getElementById('legend-container');
+            legendContainer.innerHTML = ''; // 기존 내용 지우기
+
+            for (var i = 0; i < stationNames.length; i++) {
+                var legendItem = document.createElement('div');
+                var colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = colors[i];
+                legendItem.appendChild(colorBox);
+                legendItem.innerHTML += stationNames[i];
+                legendContainer.appendChild(legendItem);
+            }
+        }
+    </script>
+</body>
+</html>
