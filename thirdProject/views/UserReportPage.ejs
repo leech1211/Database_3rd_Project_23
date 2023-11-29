@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Ranking</title>
+    <style>
+        .medal-podium {
+            display: flex;
+            justify-content: space-around;
+            width: 700px;
+            margin: 0 auto;
+        }
+        
+        .medal-stand {
+            position: relative;
+            background-color: #ccc;
+            border: 2px solid #777;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .first-place {
+            background-color: gold;
+            border: 2px solid #ffd700;
+        }
+
+        .second-place {
+            background-color: silver;
+            border: 2px solid #c0c0c0;
+        }
+
+        .third-place {
+            background-color: #cd7f32;
+            border: 2px solid #8b4513;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Ranking by Total Distance</h1>
+    <div class="medal-podium">
+        <div class="medal-stand first-place">
+            <h2>1st Place</h2>
+            <p>User Name: <%= rows1[0].UserName %></p>
+            <p>User Phone: <%= rows1[0].UserPhone %></p>
+            <p>User Age: <%= rows1[0].UserAge %></p>
+            <p>User date: <%= rows1[0].User_start_join_day %></p>
+            <p>Total Distance: <%= rows1[0].TotalDistance.toFixed(3) %></p>
+        </div>
+        <div class="medal-stand second-place">
+            <h2>2nd Place</h2>
+            <p>User Name: <%= rows1[1].UserName %></p>
+            <p>User Phone: <%= rows1[1].UserPhone %></p>
+            <p>User Age: <%= rows1[1].UserAge %></p>
+            <p>User date: <%= rows1[1].User_start_join_day %></p>
+            <p>Total Distance: <%= rows1[1].TotalDistance.toFixed(3) %></p>
+        </div>
+        <div class="medal-stand third-place">
+            <h2>3rd Place</h2>
+            <p>User Name: <%= rows1[2].UserName %></p>
+            <p>User Phone: <%= rows1[2].UserPhone %></p>
+            <p>User Age: <%= rows1[2].UserAge %></p>
+            <p>User date: <%= rows1[2].User_start_join_day %></p>
+            <p>Total Distance: <%= rows1[2].TotalDistance.toFixed(3) %></p>
+        </div>
+    </div>
+
+    <h2>사용자들의 평균 이용거리 : <%= rows2[0].AverageDistance.toFixed(3) %></p> </h2>
+</body>
+</html>
