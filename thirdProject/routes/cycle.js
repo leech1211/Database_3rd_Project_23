@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var rentalhistoryController = require('../controllers/rentalhistoryControllers');
-
+var cyclestationController = require('../controllers/stationControllers');
+var stationdetailController = require('../controllers/stationdetailControllers');
+var userReportController = require('../controllers/userReportControllers');
 
 
 
@@ -15,8 +17,10 @@ router.get('/RentalUser', (req, res) => {
        res.render('CheckCycleRentalHistory', { title: userName + "님 대여 내역 조회", rows: userRows });
    });
 });
+router.get('/station',cyclestationController.getList);
+router.get('/station/:idx', stationdetailController.getListDetail);
+router.get('/userReport',userReportController.getList);
 
 
 
 module.exports = router;
-//신엽작업
