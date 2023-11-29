@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <h1><%= title %></h1>
+    <h2>대여소에 있는 따릉이 정보 조회</h2>
+    <h2>역 위치: <%= rows1[0].StationLocate %></h4>
+
+    <h4>전체 따릉이 대수: <%= rows1.length %></h4>
+    <h4>사용가능 : 
+        <%
+        let failure1Count = 0;
+        for (let i = 0; i < rows1.length; i++) {
+            if (rows1[i].Failure === 0) {
+                failure1Count++;
+            }
+        }
+        %>
+        <%= failure1Count %>
+    </h4>
+
+    <h4>사용불가 : 
+        <%
+        let failure0Count = 0;
+        for (let i = 0; i < rows1.length; i++) {
+            if (rows1[i].Failure === 1) {
+                failure0Count++;
+            }
+        }
+        %>
+        <%= failure0Count %>
+    </h4>
+    <table border="1">
+        <tr>
+            <th>CycleNumber</th>
+            <th>Failure</th>
+        </tr>
+        <% for (var i = 0; i < rows1.length; i++) { %>
+            <tr>
+                <td><%= rows1[i].CycleNumber %></td>
+                <td><%= rows1[i].Failure === 0 ? '사용가능' : '사용불가' %></td>
+            </tr>
+        <% } %>
+    </table>
+    <div class="button-container">
+        <button id="CycleToButton">따릉이 목적지 통계</button>
+        <button id="CycleFromButton">따릉이 출발지 통계 </button>
+    </div>
+        
+
+
+    <style>
+        /* 버튼 컨테이너 스타일 */
+        .button-container {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            padding: 10px;
+        }
+        .graph {
+            position: absolute;
+            top: 150px;
+            right: 100px;
+            padding: 10px;
+            display: none; /* 그래프 초기에 숨기기 */
+        }
+
+        /* 개별 버튼 스타일 (선택적으로 사용) */
+        .button-container button {
+            margin-bottom: 10px;
+        }
+
+        /* 범례 스타일 */
+        .legend-container {
+        position: absolute;
+        top: 200px;
+            right: 100px;
+            padding: 10px;
+    }
+    .legend-item {
+        margin-bottom: 5px;
+    }
+    .color-box {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        }
+    </style>
+
+    <!-- 선형 막대 그래프 컨테이너 추가 -->
+    <div id="chart-container" class="graph" style="width: 400px; height: 400px;"></div>
+    
+    <!-- 범례 컨테이너 추가 -->
+    <div id="legend-container" class="legend-container"></div>
+    
+    <script>
+        // 이전에 전달된 JSON 데이터 문자열
+        var rowsDataString2 = '<%- JSON.stringify(rows2) %>';
+        var rowsDataString3 = '<%- JSON.stringify(rows3) %>';
+    
+        // JSON 문자열을 JavaScript 객체로 파싱
+        var rowsData2 = JSON.parse(rowsDataString2);
+        var rowsData3 = JSON.parse(rowsDataString3);
+
+        // "TodayCycleRental" 버튼 클릭 시 선형 막대 그래프를 생성하는 함수
+        function createToGraph() {
+                var CycleToArray = [];
+                var StationNameArray = [];  // 대여소 이름
+                var colors = [];
+                var frequency = {}; // 빈도를 저장할 객체
+
+                // rows 배열을 순회하며 반복문 실행
+                for (var i = 0; i < rowsData2.length; i++) {
+                    var rentalEndStation = rowsData2[i].Rental_end_station;
+
+                    // 요소가 빈도 객체에 이미 존재하는 경우, 카운트 증가
+                    if (frequency[rentalEndStation]) {
+                        frequency[rentalEndStation]++;
+                    } else {
+                        // 새로운 요소인 경우, 초기화
+                        frequency[rentalEndStation] = 1;
+                    }
+
+                    CycleToArray.push(rentalEndStation);
+                    StationNameArray.push(rentalEndStation);
+
+                    var r = Math.floor(Math.random() * 256);
+                    var g = Math.floor(Math.random() * 256);
+                    var b = Math.floor(Math.random() * 256);
+                    colors.push(`rgb(${r},${g},${b}`);
+                }
+
+                // 빈도수 정보 출력
+                for (var key in frequency) {
+                    console.log(key + ': ' + frequency[key] + ' times');
+                }
+
+                // 선형 막대 그래프를 그릴 Canvas 요소 생성
+                var canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                var context = canvas.getContext('2d');
+
+                var maxValue = Math.max.apply(null, Object.values(frequency));
+                var barWidth = 30;
+                var barSpacing = 30;
+                var keys = Object.keys(frequency);
+
+                for (var i = 0; i < keys.length; i++) {
+                    var key = keys[i];
+                    var barHeight = (canvas.height - 40) * (frequency[key] / maxValue);
+                    var x = i * (barWidth + barSpacing) + 10;
+                    var y = canvas.height - barHeight - 20;
+
+                    context.fillStyle = colors[i];
+                    context.fillRect(x, y, barWidth, barHeight);
+
+                    // 숫자 표시
+                    context.fillStyle = 'black';
+                    context.font = '12px Arial';
+                    context.fillText(frequency[key], x + barWidth / 2 - 10, y - 10);
+                }
+
+                // 메시지를 추가할 div 요소 생성
+                var messageDiv = document.createElement('div');
+                messageDiv.innerHTML = '<p>해당 대여소에서 출발한 따릉이들이 향한 대여소 <br> 표시되지 않을 시 데이터가 없을 수 있습니다</p>';
+
+                // 그래프와 메시지를 포함하는 컨테이너 div 생성
+                var containerDiv = document.createElement('div');
+                containerDiv.appendChild(canvas);
+                containerDiv.appendChild(messageDiv);
+
+                // 그래프를 페이지에 추가
+                var chartContainer = document.getElementById('chart-container');
+                chartContainer.innerHTML = ''; // 기존 내용 지우기
+                chartContainer.appendChild(containerDiv);
+
+                // 범례를 업데이트
+                updateLegend(StationNameArray, colors);
+
+                // 그래프 표시
+                chartContainer.style.display = 'block';
+                }
+
+
+        function createFromGraph() {
+                var CycleToArray = [];
+                var StationNameArray = [];  // 대여소 이름
+                var colors = [];
+                var frequency = {}; // 빈도를 저장할 객체
+
+                // rows 배열을 순회하며 반복문 실행
+                for (var i = 0; i < rowsData3.length; i++) {
+                    var rentalEndStation = rowsData3[i].Rental_start_station;
+
+                    // 요소가 빈도 객체에 이미 존재하는 경우, 카운트 증가
+                    if (frequency[rentalEndStation]) {
+                        frequency[rentalEndStation]++;
+                    } else {
+                        // 새로운 요소인 경우, 초기화
+                        frequency[rentalEndStation] = 1;
+                    }
+
+                    CycleToArray.push(rentalEndStation);
+                    StationNameArray.push(rentalEndStation);
+
+                    var r = Math.floor(Math.random() * 256);
+                    var g = Math.floor(Math.random() * 256);
+                    var b = Math.floor(Math.random() * 256);
+                    colors.push(`rgb(${r},${g},${b}`);
+                }
+
+                // 빈도수 정보 출력
+                for (var key in frequency) {
+                    console.log(key + ': ' + frequency[key] + ' times');
+                }
+
+                // 선형 막대 그래프를 그릴 Canvas 요소 생성
+                var canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                var context = canvas.getContext('2d');
+
+                var maxValue = Math.max.apply(null, Object.values(frequency));
+                var barWidth = 30;
+                var barSpacing = 30;
+                var keys = Object.keys(frequency);
+
+                for (var i = 0; i < keys.length; i++) {
+                    var key = keys[i];
+                    var barHeight = (canvas.height - 40) * (frequency[key] / maxValue);
+                    var x = i * (barWidth + barSpacing) + 10;
+                    var y = canvas.height - barHeight - 20;
+
+                    context.fillStyle = colors[i];
+                    context.fillRect(x, y, barWidth, barHeight);
+
+                    // 숫자 표시
+                    context.fillStyle = 'black';
+                    context.font = '12px Arial';
+                    context.fillText(frequency[key], x + barWidth / 2 - 10, y - 10);
+                }
+                    // 메시지를 추가할 div 요소 생성
+                var messageDiv = document.createElement('div');
+                messageDiv.innerHTML = '<p>해당 대여소로 들어온 따릉이들이 출발한 대여소 <br> 표시되지 않을 시 데이터가 없을 수 있습니다</p>';
+
+                // 그래프와 메시지를 포함하는 컨테이너 div 생성
+                var containerDiv = document.createElement('div');
+                containerDiv.appendChild(canvas);
+                containerDiv.appendChild(messageDiv);
+
+                // 그래프를 페이지에 추가
+                var chartContainer = document.getElementById('chart-container');
+                chartContainer.innerHTML = ''; // 기존 내용 지우기
+                chartContainer.appendChild(containerDiv);
+
+                // 범례를 업데이트
+                updateLegend(StationNameArray, colors);
+
+                // 그래프 표시
+                chartContainer.style.display = 'block';
+                }
+        
+        // // 범례 업데이트 함수
+        function updateLegend(stationNames, colors) {
+            var legendContainer = document.getElementById('legend-container');
+            legendContainer.innerHTML = ''; // 기존 내용 지우기
+            
+            for (var i = 0; i < stationNames.length; i++) {
+                var legendItem = document.createElement('div');
+                var colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = colors[i];
+                legendItem.appendChild(colorBox);
+                legendItem.innerHTML += stationNames[i];
+                legendContainer.appendChild(legendItem);
+            }
+        }
+
+        // 버튼 클릭 이벤트에 함수 연결 (함수 이름만 전달, 즉시 호출하지 않음)
+        document.getElementById("CycleToButton").addEventListener("click", createToGraph);
+        document.getElementById("CycleFromButton").addEventListener("click", createFromGraph);
+
+    </script>
+
+</body>
+</html>
+
+<!-- 대여소 세부정보 -->
+<!-- 대여소를 누르면 해당 대여소에 있는 자전거 내역 나오게 하자-->

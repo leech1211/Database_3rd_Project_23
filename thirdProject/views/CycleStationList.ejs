@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <h1><%= title %></h1>
+    <form action="/cycle/RentalUser" method="GET">
+        <!-- <label for="userName">유저 이름 검색:</label>
+        <input type="text" id="userName" name="userName" placeholder="유저 이름을 입력하세요" required>
+        <button type="submit">검색</button> -->
+    </form>
+    <h4>따릉이 대여소 세부정보</h4>
+    <% for (var i = 0; i < rows.length; i++) { %>
+        <a href="/cycle/station/<%= rows[i].StationNumber %>"><%= rows[i].stationLocate %></a><br>
+    <% } %>
+    <br>
+    <h4>전체 따릉이 대여소 목록</h4>
+    <table border="1">
+        <tr>
+            <th>StationNumber</th>
+            <th>stationLocate</th>
+            <th>Nowcycle</th>
+            <th>TodayCycleRental</th>
+            <th>TodayCycleInput</th>
+            <th>Operation</th>
+        </tr>
+        <% for (var i = 0; i < rows.length; i++) { %>
+            <tr>
+                <td><%= rows[i].StationNumber %></td>
+                <td><%= rows[i].stationLocate %></td>
+                <td><%= rows[i].Nowcycle %></td>
+                <td><%= rows[i].TodayCycleRental %></td>
+                <td><%= rows[i].TodayCycleInput %></td>
+                <td><%= rows[i].Operation %></td>
+            </tr>
+        <% } %>
+    </table>
+
+    <style>
+        /* 버튼 컨테이너 스타일 */
+        .button-container {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            padding: 10px;
+        }
+        .graph {
+            position: absolute;
+            top: 150px;
+            right: 100px;
+            padding: 10px;
+            display: none; /* 그래프 초기에 숨기기 */
+        }
+
+        /* 개별 버튼 스타일 (선택적으로 사용) */
+        .button-container button {
+            margin-bottom: 10px;
+        }
+
+        /* 범례 스타일 */
+        .legend-container {
+        position: absolute;
+        top: 200px;
+            right: 100px;
+            padding: 10px;
+    }
+    .legend-item {
+        margin-bottom: 5px;
+    }
+    .color-box {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        }
+    </style>
+
+    <!-- 버튼 컨테이너 추가 -->
+    <div class="button-container">
+        <button id="TodayCycleRentalButton">오늘 나간 따릉이 대수</button>
+        <button id="TodayCycleInput">오늘 들어간 따릉이 대수</button>
+        <!-- <button id="Operation">고장난 따릉이 대수</button> -->
+    </div>
+
+    <!-- 선형 막대 그래프 컨테이너 추가 -->
+    <div id="chart-container" class="graph" style="width: 400px; height: 400px;"></div>
+    
+    <!-- 범례 컨테이너 추가 -->
+    <div id="legend-container" class="legend-container"></div>
+    
+    <script>
+        // 이전에 전달된 JSON 데이터 문자열
+        var rowsDataString = '<%- JSON.stringify(rows) %>';
+    
+        // JSON 문자열을 JavaScript 객체로 파싱
+        var rowsData = JSON.parse(rowsDataString);
+
+        // "TodayCycleRental" 버튼 클릭 시 선형 막대 그래프를 생성하는 함수
+        function createOutGraph() {
+            var TodayCycleRentalArray = [];
+            var StationNameArray = [];
+            var colors = [];
+
+            // rows 배열을 순회하며 반복문 실행
+            for (var i = 0; i < rowsData.length; i++) {
+                TodayCycleRentalArray.push(rowsData[i].TodayCycleRental); 
+                StationNameArray.push(rowsData[i].stationLocate);
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                colors.push(`rgb(${r},${g},${b}`);
+            }
+
+            // 선형 막대 그래프를 그릴 Canvas 요소 생성
+            var canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            var context = canvas.getContext('2d');
+
+            var maxValue = Math.max.apply(null, TodayCycleRentalArray);
+            var barWidth = 30;
+            var barSpacing = 30;
+
+            for (var i = 0; i < TodayCycleRentalArray.length; i++) {
+                var barHeight = (canvas.height - 40) * (TodayCycleRentalArray[i] / maxValue);
+                var x = i * (barWidth + barSpacing) + 10;
+                var y = canvas.height - barHeight - 20;
+
+                context.fillStyle = colors[i];
+                context.fillRect(x, y, barWidth, barHeight);
+
+                // 숫자 표시
+                context.fillStyle = 'black';
+                context.font = '12px Arial';
+                context.fillText(TodayCycleRentalArray[i], x + barWidth / 2 - 10, y - 10);
+            }
+
+            // 메시지를 추가할 div 요소 생성
+            var messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '<p>오늘 대여소에서 나간 따릉이 대수 입니다 <br> 표시되지 않을 시 데이터가 없을 수 있습니다</p>';
+
+            // 그래프와 메시지를 포함하는 컨테이너 div 생성
+            var containerDiv = document.createElement('div');
+            containerDiv.appendChild(canvas);
+            containerDiv.appendChild(messageDiv);
+
+            // 그래프를 페이지에 추가
+            var chartContainer = document.getElementById('chart-container');
+            chartContainer.innerHTML = ''; // 기존 내용 지우기
+            chartContainer.appendChild(containerDiv);
+
+            // 범례를 업데이트
+            updateLegend(StationNameArray, colors);
+
+            // 그래프 표시
+            chartContainer.style.display = 'block';
+        }
+
+        function createInGraph() {
+            var TodayCycleInputArray = [];
+            var StationNameArray = [];
+            var colors = [];
+
+            // rows 배열을 순회하며 반복문 실행
+            for (var i = 0; i < rowsData.length; i++) {
+                TodayCycleInputArray.push(rowsData[i].TodayCycleInput); 
+                StationNameArray.push(rowsData[i].stationLocate);
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                colors.push(`rgb(${r},${g},${b}`);
+            }
+
+            // 선형 막대 그래프를 그릴 Canvas 요소 생성
+            var canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            var context = canvas.getContext('2d');
+
+            var maxValue = Math.max.apply(null, TodayCycleInputArray);
+            var barWidth = 30;
+            var barSpacing = 30;
+
+            for (var i = 0; i < TodayCycleInputArray.length; i++) {
+                var barHeight = (canvas.height - 40) * (TodayCycleInputArray[i] / maxValue);
+                var x = i * (barWidth + barSpacing) + 10;
+                var y = canvas.height - barHeight - 20;
+
+                context.fillStyle = colors[i];
+                context.fillRect(x, y, barWidth, barHeight);
+
+                // 숫자 표시
+                context.fillStyle = 'black';
+                context.font = '12px Arial';
+                context.fillText(TodayCycleInputArray[i], x + barWidth / 2 - 10, y - 10);
+            }
+
+            // 메시지를 추가할 div 요소 생성
+            var messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '<p>오늘 대여소에 들어온 따릉이 대수 입니다 <br> 표시되지 않을 시 데이터가 없을 수 있습니다</p>';
+
+            // 그래프와 메시지를 포함하는 컨테이너 div 생성
+            var containerDiv = document.createElement('div');
+            containerDiv.appendChild(canvas);
+            containerDiv.appendChild(messageDiv);
+
+            // 그래프를 페이지에 추가
+            var chartContainer = document.getElementById('chart-container');
+            chartContainer.innerHTML = ''; // 기존 내용 지우기
+            chartContainer.appendChild(containerDiv);
+
+            // 범례를 업데이트
+            updateLegend(StationNameArray, colors);
+
+            // 그래프 표시
+            chartContainer.style.display = 'block';
+        }
+        
+        // 범례 업데이트 함수
+        function updateLegend(stationNames, colors) {
+            var legendContainer = document.getElementById('legend-container');
+            legendContainer.innerHTML = ''; // 기존 내용 지우기
+            
+            for (var i = 0; i < stationNames.length; i++) {
+                var legendItem = document.createElement('div');
+                var colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = colors[i];
+                legendItem.appendChild(colorBox);
+                legendItem.innerHTML += stationNames[i];
+                legendContainer.appendChild(legendItem);
+            }
+        }
+
+        // 버튼 클릭 이벤트에 함수 연결 (함수 이름만 전달, 즉시 호출하지 않음)
+        document.getElementById("TodayCycleRentalButton").addEventListener("click", createOutGraph);
+        document.getElementById("TodayCycleInput").addEventListener("click", createInGraph);
+        //document.getElementById("Operation").addEventListener("click", createGraph);
+    </script>
+</body>
+</html>
