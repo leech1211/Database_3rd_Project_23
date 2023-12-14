@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/cycle/update?CycleNumber=<%=row.CycleNumber%>" method="post">
+            <table border="1">
+                <input type="hidden" name="CycleNumber" value="<%=row.CycleNumber%>"/>
+                <input type="hidden" name="Now_rental" value="<%=row.Now_rental%>" />
+                <tr>
+                    <td>고장 여부</td>
+                    <td>
+                        <input type="checkbox" name="Failure" id="Failure" value="<%=row.Failure%>" <%= row.Failure == 0 ? 'checked' : '' %>/>정상
+                    </td>
+                </tr>
+                <tr>
+                    <td>현재 대여소</td>
+                    <td><input type="text" name="Now_station" value="<%=row.Now_station%>"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">정보 수정</button>
+                        <a href="/cycle">리스트로 돌아가기</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            $('#Failure').change(function() {
+                if(this.checked) {
+                    this.value = 0;
+                } else {
+                    this.value = 1;
+                }
+            });
+
+            $('form').on('submit', function(e) {
+            e.preventDefault();
+            console.log($(this).serialize());
+            this.submit();
+            });
+        </script>
+    </body>
+</html>

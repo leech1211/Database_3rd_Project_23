@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <button id="write-btn">고장 신고</button>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>고장 번호</td>
+                <td>사용자 번호</td>
+                <td>고장 내용</td>
+                <td>고장 날짜</td>
+                <td>고장 난 자전거 번호</td>
+                <td>조치 여부</td>
+                <td>조회</td>
+            </tr>
+            <% for(var i=0; i<rows.length; i++){ var oneItem = rows[i]; %>
+                <tr>
+                    <td><%=oneItem.FailNumber%></td>
+                    <td><%=oneItem.UserNumber%></td>
+                    <td><%=oneItem.FailContent%></td>
+                    <td><%=oneItem.FailData%></td>
+                    <td><%=oneItem.FailCycle%></td>
+                    <td><%= oneItem.Failure_success == 0 ? '고장' : '조치 완료' %></td>
+                    <td><button class="read-btn" data-number="<%=oneItem.FailNumber%>">조회</button></td>
+                </tr>
+            <% } %>
+        </table>
+        <script>
+            $('#write-btn').on('click', function() {
+                location.href = '/failure/add';
+            });
+
+            $('.read-btn').on('click', function() {
+                var failNumber = $(this).data('number');
+                location.href = '/failure/read?FailNumber=' + failNumber;
+            });
+        </script>
+    </body>
+</html>

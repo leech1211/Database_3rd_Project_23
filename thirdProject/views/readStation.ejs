@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+            <table border="1">
+                <tr>
+                    <td>대여소 번호</td>
+                    <td><%=row.StationNumber%></td>
+                </tr>
+                <tr>
+                    <td>대여소 위치</td>
+                    <td><%=row.stationLocate%></td>
+                </tr>
+                <tr>
+                    <td>따릉이 보유 수</td>
+                    <td><%=row.Nowcycle%></td>
+                </tr>
+                <tr>
+                    <td>당일 따릉이 대여 수</td>
+                    <td><%=row.TodayCycleRental%></td>
+                </tr>
+                <tr>
+                    <td>당일 따릉이 반납 수</td>
+                    <td><%=row.TodayCycleInput%></td>
+                </tr>
+                <tr>
+                    <td>영업 여부</td>
+                    <td><%= row.Operation == 0 ? '영업 중' : '폐쇄 중' %></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="update-btn" data-number="<%=row.StationNumber%>">정보 수정</button>
+                    </td>
+                    <td colspan="2">
+                        <a href="/station">대여소 목록</a>
+                    </td>
+                </tr>
+            </table>
+            <script>
+                $('.update-btn').on('click', function() {
+                    var stationNumber = $(this).data('number');
+                    location.href = '/station/update?StationNumber=' + stationNumber;
+                });
+            </script>
+        <!-- Delete Form 추가 -->
+        <form action="/station/delete?StationNumber=<%=row.StationNumber%>" method="post">
+            <button type="submit">정보 삭제</button> 
+        </form>
+    </body>
+</html>

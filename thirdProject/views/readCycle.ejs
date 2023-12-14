@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+            <table border="1">
+                <tr>
+                    <td>자전거 번호</td>
+                    <td><%=row.CycleNumber%></td>
+                </tr>
+                <tr>
+                    <td>대여 여부</td>
+                    <td><%= row.Now_rental == 0 ? '미대여' : '대여 중' %></td>
+                </tr>
+                <tr>
+                    <td>대여 가능 여부</td>
+                    <td><%= row.Failure == 0 ? '대여 가능' : '대여 불가' %></td>
+                </tr>
+                <tr>
+                    <td>고장 여부</td>
+                    <td><%= row.Failure == 0 ? '정상' : '고장' %></td>
+                </tr>
+                <tr>
+                    <td>현재 대여소</td>
+                    <td><%=row.Now_station%></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="update-btn" data-number="<%=row.CycleNumber%>">정보 수정</button>
+                    </td>
+                    <td colspan="2">
+                        <a href="/cycle">자전거 목록</a>
+                    </td>
+                </tr>
+            </table>
+            <script>
+                $('.update-btn').on('click', function() {
+                    var CycleNumber = $(this).data('number');
+                    location.href = '/cycle/update?CycleNumber=' + CycleNumber;
+                });
+            </script>
+        <!-- Delete Form 추가 -->
+        <form action="/cycle/delete?CycleNumber=<%=row.CycleNumber%>" method="post">
+            <button type="submit">정보 삭제</button> 
+        </form>
+    </body>
+</html>

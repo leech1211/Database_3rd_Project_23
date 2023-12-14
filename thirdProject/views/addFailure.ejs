@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/failure/add" method="post" onsubmit="return onWriteSubmit()">
+            <table border="1">
+                <tr>
+                    <td>사용자 번호</td>
+                    <td><input type="text" name="UserNumber" id="UserNumber" required/></td>
+                </tr>
+                <tr>
+                    <td>고장 내용</td>
+                    <td><input type="text" name="FailContent" id="FailContent" required/></td>
+                </tr>
+                <tr>
+                    <td>고장 날짜</td>
+                    <td><input type="date" name="FailData" id="FailData" required/></td>
+                </tr>
+                <tr>
+                    <td>고장 낸 자전거 번호</td>
+                    <td><input type="text" name="FailCycle" id="FailCycle" required/></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">등록하기</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            function onWriteSubmit(){
+                var failure_success = document.getElementById('Failure_success');
+                failure_success.value = failure_success.checked ? 0 : 1;
+
+                if($("#UserNumber").val().trim() == ""){
+                    alert("사용자 번호를 입력해주세요.");
+                    $("#UserNumber").focus();
+                    return false;
+                }
+                if($("#FailContent").val().trim() == ""){
+                    alert("고장 내용을 입력해주세요.");
+                    $("#FailContent").focus();
+                    return false;
+                }
+                if($("#FailData").val().trim() == ""){
+                    alert("고장 날짜를 입력해주세요.");
+                    $("#FailData").focus();
+                    return false;
+                }
+                if($("#FailCycle").val().trim() == ""){
+                    alert("고장 낸 자전거 번호를 입력해주세요.");
+                    $("#FailCycle").focus();
+                    return false;
+                }
+            }
+        </script>
+    </body>
+</html>

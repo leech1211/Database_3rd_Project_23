@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <button id="write-btn">자전거 추가</button>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>자전거 번호</td>
+                <td>대여 여부</td>
+                <td>대여 가능 여부</td>
+                <td>고장 여부</td>
+                <td>등록된 대여소</td>
+                <td>조회</td>
+            </tr>
+            <% for(var i=0; i<rows.length; i++){ var oneItem = rows[i]; %>
+                <tr>
+                    <td><%=oneItem.CycleNumber%></td>
+                    <td><%= oneItem.Now_rental == 0 ? '미대여' : '대여 중' %></td>
+                    <td><%= oneItem.Failure == 0 ? '대여 가능' : '대여 불가' %></td>
+                    <td><%= oneItem.Failure == 0 ? '정상' : '고장' %></td>
+                    <td><%=oneItem.Now_station%></td>
+                    <td>
+                        <button class="read-btn" data-number="<%=oneItem.CycleNumber%>">조회</button>
+                    </td>
+                </tr>
+            <% } %>
+        </table>
+        <script>
+            $('#write-btn').on('click', function() {
+                location.href = '/cycle/add';
+            });
+
+            $('.read-btn').on('click', function() {
+                var CycleNumber = $(this).data('number');
+                location.href = '/cycle/read?CycleNumber=' + CycleNumber;
+            });
+        </script>
+    </body>
+</html>
