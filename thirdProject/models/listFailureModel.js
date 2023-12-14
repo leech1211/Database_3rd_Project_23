@@ -1,10 +1,10 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    connectLimit: 5,
+    connectionLimit:5,
     host: 'localhost',
     user: 'root',
-    password: 'xodnd@8533',
-    database: 'service'
+    password: 'Three1215!',
+    database: 'tutorial'
 });
 
 module.exports = {
@@ -15,3 +15,4 @@ module.exports = {
         }); 
     }
 }
+

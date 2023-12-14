@@ -1,12 +1,19 @@
+// var mysql = require('mysql');
+// var connection = mysql.createConnection({
+//     connectionLimit:5,
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'Three1215!',
+//     database: 'tutorial'
+// });
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    connectLimit: 5,
+    connectionLimit:5,
     host: 'localhost',
     user: 'root',
-    password: 'xodnd@8533',
-    database: 'service'
+    password: 'Three1215!',
+    database: 'tutorial'
 });
-
 module.exports = {
     insertData: function(datas, callback) {
         var CycleInfoSql = "INSERT INTO Cycle_info (Now_rental, Failure, Now_station) VALUES (?, ?, ?);";
