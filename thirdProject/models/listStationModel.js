@@ -1,10 +1,10 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    connectLimit: 5,
+    connectionLimit:5,
     host: 'localhost',
     user: 'root',
-    password: 'xodnd@8533',
-    database: 'service'
+    password: 'Three1215!',
+    database: 'tutorial'
 });
 
 module.exports={getList(callback){
@@ -14,3 +14,19 @@ module.exports={getList(callback){
     }); 
 }
 }
+
+// var mysql = require('mysql');
+// var connection = mysql.createConnection({
+//     connectionLimit:5,
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'Three1215!',
+//     database: 'tutorial'
+// });
+
+// module.exports={getList(callback){
+//     connection.query('SELECT * FROM station_info',(err,rows,filds)=>{
+//         if(err) throw err;
+//         callback(rows);
+//     });
+// }}
