@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+            <table border="1">
+                <tr>
+                    <td>고장 번호</td>
+                    <td><%=row.FailNumber%></td>
+                </tr>
+                <tr>
+                    <td>사용자 번호</td>
+                    <td><%=row.UserNumber%></td>
+                </tr>
+                <tr>
+                    <td>고장 내용</td>
+                    <td><%=row.FailContent%></td>
+                </tr>
+                <tr>
+                    <td>고장 날짜</td>
+                    <td><%=row.FailData%></td>
+                </tr>
+                <tr>
+                    <td>고장 낸 자전거 번호</td>
+                    <td><%=row.FailCycle%></td>
+                </tr>
+                <tr>
+                    <td>조치 여부</td>
+                    <td><%= row.Failure_success == 0 ? '고장' : '조치 완료' %></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="update-btn" data-number="<%=row.FailNumber%>">정보 수정</button>
+                    </td>
+                    <td colspan="2">
+                        <a href="/failure">고장 목록</a>
+                    </td>
+                </tr>
+            </table>
+            <script>
+                $('.update-btn').on('click', function() {
+                    var failNumber = $(this).data('number');
+                    location.href = '/failure/update?FailNumber=' + failNumber;
+                });
+            </script>
+        <!-- Delete Form 추가 -->
+        <form action="/failure/delete?FailNumber=<%=row.FailNumber%>" method="post">
+            <button type="submit">정보 삭제</button> 
+        </form>
+    </body>
+</html>

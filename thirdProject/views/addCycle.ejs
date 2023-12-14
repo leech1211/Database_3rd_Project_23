@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/cycle/add" method="post" onsubmit="return onWriteSubmit()">
+            <table border="1">
+                <tr>
+                    <td>등록할 대여소</td>
+                    <td><input type="text" name="Now_station" id="Now_station" required/></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">등록하기</button>
+                    </td>
+                </tr>
+            </table>
+            <!-- 대여 여부와 고장 여부를 미리 정의 -->
+            <input type="hidden" name="Now_rental" value="1" />
+            <input type="hidden" name="Failure" value="1" />
+        </form>
+        <script>
+            function onWriteSubmit(){
+                if($("#Now_station").val().trim() == ""){
+                    alert("등록할 대여소를 입력해주세요.");
+                    $("#Now_station").focus();
+                    return false;
+                }
+            }
+        </script>
+    </body>
+</html>

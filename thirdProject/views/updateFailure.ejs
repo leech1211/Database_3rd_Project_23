@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/failure/update?FailNumber=<%=row.FailNumber%>" method="post">
+            <table border="1">
+                <input type="hidden" name="FailNumber" value="<%=row.FailNumber%>"/>
+                <tr>
+                    <td>사용자 번호</td>
+                    <td><input type="text" name="UserNumber" value="<%=row.UserNumber%>" readonly/></td>
+                </tr>
+                <tr>
+                    <td>고장 내용</td>
+                    <td><input type="text" name="FailContent" value="<%=row.FailContent%>" readonly/></td>
+                </tr>
+                <tr>
+                    <td>고장 날짜</td>
+                    <td><input type="date" name="FailData" value="<%=row.FailData%>" readonly/></td>
+                </tr>
+                <tr>
+                    <td>고장 낸 자전거 번호</td>
+                    <td><input type="text" name="FailCycle" value="<%=row.FailCycle%>" readonly/></td>
+                </tr>
+                <tr>
+                    <td>수리 여부</td>
+                    <td><input type="checkbox" name="Failure_success" id="Failure_success" value=<%=row.Failure_success%> <%= row.Failure_success == 0 ? 'checked' : '' %>/>조치 완료</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">정보 수정</button>
+                        <a href="/failure">리스트로 돌아가기</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            $('#Failure_success').change(function() {
+                if(this.checked) {
+                    this.value = 0;
+                } else {
+                    this.value = 1;
+                }
+            });
+
+            $('form').on('submit', function(e) {
+            e.preventDefault();
+            console.log($(this).serialize());
+            this.submit();
+            });
+        </script>
+    </body>
+</html>

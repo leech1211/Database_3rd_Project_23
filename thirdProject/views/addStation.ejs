@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/station/add" method="post" onsubmit="return onWriteSubmit()">
+            <table border="1">
+                <tr>
+                    <td>대여소 위치</td>
+                    <td><input type="text" name="stationLocate" id="stationLocate" required/></td>
+                </tr>
+                <tr>
+                    <td>따릉이 보유 수</td>
+                    <td><input type="number" name="Nowcycle" id="Nowcycle" required/></td>
+                </tr>
+                <tr>
+                    <td>당일 따릉이 대여 수</td>
+                    <td><input type="number" name="TodayCycleRental" id="TodayCycleRental" required/></td>
+                </tr>
+                <tr>
+                    <td>당일 따릉이 반납 수</td>
+                    <td><input type="number" name="TodayCycleInput" id="TodayCycleInput" required/></td>
+                </tr>
+                <!-- <tr>
+                    <td>영업 여부</td>
+                    <td><input type="checkbox" name="Operation" id="Operation" value="0" />영업중</td>
+                    </td>
+                </tr> -->
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">등록하기</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            function onWriteSubmit(){
+                var operation = document.getElementById('Operation');
+                operation.value = operation.checked ? 0 : 1;
+
+                if($("#stationLocate").val().trim() == ""){
+                    alert("대여소 위치를 입력해주세요.");
+                    $("#stationLocate").focus();
+                    return false;
+                }
+                if($("#Nowcycle").val().trim() == ""){
+                    alert("따릉이 보유 수를 입력해주세요.");
+                    $("#Nowcycle").focus();
+                    return false;
+                }
+                if($("#TodayCycleRental").val().trim() == ""){
+                    alert("당일 따릉이 대여 수를 입력해주세요.");
+                    $("#TodayCycleRental").focus();
+                    return false;
+                }
+                if($("#TodayCycleInput").val().trim() == ""){
+                    alert("당일 따릉이 반납 수를 입력해주세요.");
+                    $("#TodayCycleInput").focus();
+                    return false;
+                }
+            }
+        </script>
+    </body>
+</html>

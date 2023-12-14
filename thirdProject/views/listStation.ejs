@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <button id="write-btn">대여소 개설</button>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>대여소 번호</td>
+                <td>대여소 위치</td>
+                <td>따릉이 보유 수</td>
+                <td>당일 따릉이 대여 수</td>
+                <td>당일 따릉이 반납 수</td>
+                <td>영업 여부</td>
+                <td>조회</td>
+            </tr>
+            <% for(var i=0; i<rows.length; i++){ var oneItem = rows[i]; %>
+                <tr>
+                    <td><%=oneItem.StationNumber%></td>
+                    <td><%=oneItem.stationLocate%></td>
+                    <td><%=oneItem.Nowcycle%></td>
+                    <td><%=oneItem.TodayCycleRental%></td>
+                    <td><%=oneItem.TodayCycleInput%></td>
+                    <td><%= oneItem.Operation == 0 ? '영업 중' : '폐쇄 중' %></td>
+                    <td>
+                        <button class="read-btn" data-number="<%=oneItem.StationNumber%>">조회</button>
+                    </td>
+                </tr>
+            <% } %>
+        </table>
+        <script>
+            $('#write-btn').on('click', function() {
+                location.href = '/station/add';
+            });
+
+            $('.read-btn').on('click', function() {
+                var stationNumber = $(this).data('number');
+                location.href = '/station/read?StationNumber=' + stationNumber;
+            });
+        </script>
+    </body>
+</html>
