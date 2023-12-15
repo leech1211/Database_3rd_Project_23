@@ -31,5 +31,10 @@
                 </tr>
             </table>
         </form>
+        <br>
+        <form action="/board/delete" method="post">
+            <input type="hidden" name="BoardNumber" value="<%=row.BoardNumber%>"/>
+            <button type="submit" onclick=" return onDeleteSubmit()">글 삭제</button>
+        </form>
     </body>
 </html>
