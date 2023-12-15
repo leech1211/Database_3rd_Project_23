@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/rent/return" method="post" onsubmit="return onReturnSubmit()">
+            <table border="1">
+                <tr>
+                    <td>자전거 번호</td>
+                    <td><input type="number" name="CycleNumber" id="CycleNumber" required/></td>
+                </tr>
+                <tr>
+                    <td>대여 종료 대여소</td>
+                    <td><input type="number" name="Rental_end_station" id="Rental_end_station" required/></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">반납하기</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            function onReturnSubmit(){
+                if($("#CycleNumber").val().trim() == ""){
+                    alert("자전거 번호를 입력해주세요.");
+                    $("#CycleNumber").focus();
+                    return false;
+                }
+                if($("#Rental_end_station").val().trim() == ""){
+                    alert("대여 종료 대여소를 입력해주세요.");
+                    $("#Rental_end_station").focus();
+                    return false;
+                }
+            }
+            $(document).ready(function() { // 커리로 넘겨 받은 CycleNumber 그대로 입력 (읽기전용 - 변경불가)
+                var urlParams = new URLSearchParams(window.location.search);
+                var cycleNumber = urlParams.get('cycleNumber');
+                if (cycleNumber) {
+                    $('#CycleNumber').val(cycleNumber);
+                    $('#CycleNumber').prop('readonly', true);
+                }
+            });
+        </script>
+    </body>
+</html>

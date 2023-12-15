@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <a href="/board/write/<%= UserID %>">글쓰기로 이동</a>
+        <a href="/board/bike/<%= UserID %>">따릉이로 이동</a>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>게시물</td>
+                <td>게시자</td>
+                <td>제목</td>
+                <td>조회수</td>
+                <td>수정날짜</td>
+            </tr>
+
+<% 
+            for(var i=0; i<rows.length; i++){
+                var oneItem = rows[i];                    
+%>
+
+            <tr>
+                <td><%=oneItem.BoardNumber%></td>
+                <td><%=oneItem.Writer%></td>
+               <td><a href="/board/read/<%= UserID %>/<%=oneItem.BoardNumber%>"><%=oneItem.Title%></a></td >
+                <td><%=oneItem.Hit%></td>
+                <td><%=oneItem.Updatetime%></td>
+            </tr>
+
+<%
+} 
+%>                         
+        </table>          
+    </body>
+</html> 

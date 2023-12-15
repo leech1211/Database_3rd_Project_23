@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>로그인</title>
+        <meta charset='utf-8'>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script src="/javascripts/jquery-3.6.1.min.js"></script>
+        <script>
+            $(function() {
+                $("#btnLogin").click(function () {
+                    if ($("#username").val() == "") {
+                        alert("아이디를 꼭 입력 하세요");
+                        $("#username").focus();
+                        return false;
+                    }
+                    if ($("#password").val() == "") {
+                        alert("비밀번호를 꼭 입력 하세요");
+                        $("#password").focus();
+                        return false;
+                    }
+                    return true;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1>로그인</h1>
+        <form action="/board/login" method="post">
+            <table width="400" border="1">
+                <tr>
+                    <th>아이디</th>
+                    <td><input type="text" name="UserID" id="username" size="12" maxlength="12"></td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td><input type="password" name="UserPW" id="password" size="12" maxlength="12"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit" id="btnLogin">로그인</button> 
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

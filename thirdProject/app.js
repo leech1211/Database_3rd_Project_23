@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var bodyParser = require('body-parser');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -11,6 +12,8 @@ var cycle = require('./routes/cycle');    //자전거 대여내역
 var stationRouter = require('./routes/boardStation');
 var failureRouter = require('./routes/boardFailure');
 var cycleRouter = require('./routes/boardCycle');
+var board = require('./routes/board');
+var rentRouter = require('./routes/boardRent'); // 대여, 반납을 위한 Rental 서비스 관리 Router
 
 var app = express();
 
@@ -32,8 +35,10 @@ app.use('/cycle',cycle);    //자전거 대여내역
 app.use('/station', stationRouter);
 app.use('/failure', failureRouter);
 app.use('/cycle', cycleRouter);
+app.use('/rent', rentRouter); // RentRouter 
 
-
+//신엽 작업본
+app.use('/board', board);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
