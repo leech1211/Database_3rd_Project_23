@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.6.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/board/write/<%= UserID %>" method="post">
+            <table border="1">
+                <tr>
+                    <td>제목</td>
+                    <td><input type="text" name="Title" id="title"></td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td><textarea name="Content" id="content" cols="30" rows="10" ></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">글쓰기</button>
+                    </td>
+                </tr>
+            </table>
+        </form>

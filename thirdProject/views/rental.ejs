@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <form action="/rent/rental" method="post" onsubmit="return onRentSubmit()">
+            <table border="1">
+                <tr>
+                    <td>자전거 번호</td>
+                    <td><input type="number" name="CycleNumber" id="CycleNumber" required/></td>
+                </tr>
+                <tr>
+                    <td>대여 사용자</td>
+                    <td><input type="text" name="UserNumber" id="UserNumber" required/></td>
+                </tr>
+                <tr>
+                    <td>대여 시작 대여소</td>
+                    <td><input type="number" name="Rental_start_station" id="Rental_start_station" required/></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">대여하기</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            function onRentSubmit(){
+                if($("#CycleNumber").val().trim() == ""){
+                    alert("자전거 번호를 입력해주세요.");
+                    $("#CycleNumber").focus();
+                    return false;
+                }
+                if($("#RentalUser").val().trim() == ""){
+                    alert("대여 사용자를 입력해주세요.");
+                    $("#RentalUser").focus();
+                    return false;
+                }
+                if($("#Rental_start_station").val().trim() == ""){
+                    alert("대여 시작 대여소를 입력해주세요.");
+                    $("#Rental_start_station").focus();
+                    return false;
+                }
+            }
+        </script>
+    </body>
+</html>

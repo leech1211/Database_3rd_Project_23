@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    </head>
+    <body>  
+        <h1><%= title %></h1>
+        <button id="rent-btn">대여하기</button>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>자전거 번호</td>
+                <td>대여 사용자</td>
+                <td>대여 시작 시간</td>
+                <td>대여 시작 대여소</td>
+                <td>대여 종료 시간</td>
+                <td>대여 종료 대여소</td>
+                <td>반납</td>
+            </tr>
+            <% for(var i=0; i<rows.length; i++){ var oneItem = rows[i]; %>
+                <tr>
+                    <td><%=oneItem.CycleNumber%></td>
+                    <td><%=oneItem.RentalUser%></td>
+                    <td><%=oneItem.RentalDate_start%></td>
+                    <td><%=oneItem.Rental_start_station%></td>
+                    <td><%=oneItem.RentalDate_end%></td>
+                    <td><%=oneItem.Rental_end_station%></td>
+                    <td><button class="return-btn" data-cyclenumber="<%=oneItem.CycleNumber%>">반납하기</button></td>
+                </tr>
+            <% } %>
+        </table>
+        <script>
+            $('#rent-btn').on('click', function() {
+                // var cycleNumber = $(this).data('number');
+                location.href = '/rent/rental'; // 대여 폼으로 이동
+            });
+
+            $('.return-btn').on('click', function() {
+                var cycleNumber = $(this).data('cyclenumber');
+                location.href = '/rent/return?cycleNumber=' + cycleNumber; // 쿼리로 Cyclenumber 넘겨주기 - 이를 통해 반납 진행
+            });
+        </script>
+    </body>
+</html>
